@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Password Checker</title>
+</head>
+
+<body class="center wrapper">
+  <!-- <div class="warning"> This content my be out dated</div> -->
+  <p>This is a simple implementation of the zxcvbn algorithm. <br>
+    The zxcvbn algorithm is an open source algorithm made by dropbox<p>
+      <hr>
+      <label>password</label>
+      <input id="passInput" type="password"></input>
+      <div id="output" style="text-align:center"></div>
+      <table style="width:100%">
+          <tr>
+            <th>Crack types</th>
+            <th>Time until cracked<th>
+          </tr>
+        <tbody id="zxcvbnTable">
+        </tbody>
+      </table>
+</body>
+
+</html>
+
+<style>
+  .center {
+	margin: auto;
+	width: 60%;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+}
+.wrapper{
+	flex-direction: column;
+}
+#passInput {
+	font:small-caption;font-size:16px;
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	margin-top: 6px;
+	margin-bottom: 16px;
+}
+</style>
+
+<script type="text/javascript" src="zxcvbn.js"></script>
+<script>
+  function addRow(content, morecontent) {
+    if (!document.getElementsByTagName) return;
+    tabBody = document.getElementById("zxcvbnTable");
+    row = document.createElement("tr");
+    cell1 = document.createElement("td");
+    cell2 = document.createElement("td");
+    textnode1 = document.createTextNode(content);
+    textnode2 = document.createTextNode(morecontent);
+    cell1.appendChild(textnode1);
+    cell2.appendChild(textnode2);
+    row.appendChild(cell1);
+    row.appendChild(cell2);
+    tabBody.appendChild(row);
+  }
+
+  var outputEle = document.getElementById('output');
+  var inputEle = document.getElementById('passInput');
+
+  //inputEle.addEventListener("keydown",check);
+  //inputEle.addEventListener("focus",check);
+  inputEle.addEventListener("input", check);
+  inputEle.addEventListener("load", check);
+
+  function check() {
+    zxcvbnOut = zxcvbn(inputEle.value);
+    var outmess = "Score: " + zxcvbnOut.score;
+    outputEle.innerHTML = outmess;
+    if (zxcvbnOut.score <= 2) {
+      outputEle.className = "error";
+    } else if (zxcvbnOut.score == 3) {
+      outputEle.className = "warning";
+    } else if (zxcvbnOut.score > 3) {
+      outputEle.className = "success";
+    }
+		document.getElementById("zxcvbnTable").innerHTML = "";
+		for (var key in zxcvbnOut.crack_times_display) {
+      if (zxcvbnOut.crack_times_display.hasOwnProperty(key)) {
+        console.log(key + " -> " + zxcvbnOut.crack_times_display[key]);
+        addRow(key.replace(/_/g, ' '), zxcvbnOut.crack_times_display[key]);
+      }
+    }
+  }
+</script>

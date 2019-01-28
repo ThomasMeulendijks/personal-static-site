@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+<div id="recaman-menu">
+  <div>
+    <p>Range slider:</p>
+    <input type="range" min="1" max="500" value="0" id="range">
+    <p>Value: <span id="value"></span></p>
+  </div>
+  <div>
+    <input display="inline" type="button" value="Redraw" onclick="restart();" />
+  </div>
+</div>
+<style>
+  #recaman-menu {
+    display: flex;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js">
+</script>
+<script>
+  let S = [];
+  let count = 0;
+  let active_num = 0;
+  let max_count = Math.round(window.innerWidth / 15);
+  let slider = document.getElementById("range");
+  let output = document.getElementById("value");
+  slider.value = max_count;
+  output.innerHTML = max_count;
+
+  slider.oninput = function() {
+    output.innerHTML = this.value;
+    max_count = this.value;
+    restart();
+  }
+  // window.onresize = function() {
+  //   makeCanvas();
+  //   restart();
+  // }
+
+  function restart() {
+    clear();
+    S = [];
+    count = 0;
+    active_num = 0;
+  }
+
+  function makeCanvas() {
+    createCanvas(window.innerWidth, window.innerHeight);
+  }
+
+  function setup() {
+    makeCanvas();
+    document.body.style.background = "url('linePaper.png') repeat right top";
+    frameRate(20);
+  }
+
+  function draw() {
+    if (count < max_count) {
+      step();
+      drawStep();
+    }
+  }
+
+  function drawStep() {
+    var scale = 10;
+    var prev_num = scale * S[count - 1];
+    var num = scale * active_num;
+
+    var x = (prev_num + num) / 2;
+    var y = height / 2;
+    var w = abs(num - prev_num);
+    var h = w;
+
+    stroke(69, 67, 67);
+    noFill();
+    arc(x, y, w, h, (count % 2 == 0) ? 0 : PI, (count % 2 == 0) ? PI : TWO_PI);
+  }
+
+  function step() {
+    count++;
+    S.push(active_num);
+    //console.log('active_num: ' + active_num + '  count: ' + count + '  ' + S);
+    if (S.indexOf(active_num - count) > 0) {
+      active_num += count;
+    } else {
+      if (active_num - count <= 0) {
+        active_num += count;
+      } else {
+        active_num -= count;
+      }
+    }
+  }
+</script>

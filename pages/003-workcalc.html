@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+
+	<body class="body">
+		<div class="field-container">
+			<div class="field">
+				<div class="text">Start Tijd:</div>
+				<input class="input" type="time" name="start_time">
+			</div>
+			<div class="field">
+				<div class="text">Eind Tijd:</div>
+				<input class="input" type="time" name="end_time">
+			</div>
+			<div class="field">
+				<div class="text">Prijs per kwartier:</div>
+				<input class="input" type="number" name="cost_quarter" min="1" step="0.01">
+			</div>
+			<button class="button" onclick="calc()">Calculeer</button>
+		</div>
+		<div class="field-container">
+			<div class="result">
+				<div class="field">
+					Gewerkte tijd in uren:
+					<input class="input" type="text" name="hours_worked" readonly="true">
+				</div>
+				<div class="field">
+					Prijs per uur:
+					<input class="input" type="text" name="cost_hour" readonly="true">
+				</div>
+				<div class="field">
+					Totaal prijs in euros:
+					<input class="input" type="text" name="total_cost" readonly="true">
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	function calc() {
+		var start_time = document.getElementsByName("start_time")[0].value;
+		var end_time = document.getElementsByName("end_time")[0].value;
+		var cost_quarter = document.getElementsByName("cost_quarter")[0].value;
+
+		var start_time_elem = start_time.split(':');
+		var end_time_elem = end_time.split(':');
+
+		var hours_worked = end_time_elem[0] - start_time_elem[0] +
+			((end_time_elem[1] - start_time_elem[1]) / 60)
+		var cost_hour = cost_quarter * 4;
+		var total_cost = hours_worked * cost_hour;
+
+		document.getElementsByName("hours_worked")[0].value = hours_worked;
+		document.getElementsByName("cost_hour")[0].value = cost_hour;
+		document.getElementsByName("total_cost")[0].value = total_cost;
+	}
+</script>
+<style>
+.field {
+	width: 100%;
+	margin: auto;
+	padding: 7px;
+	display: block;
+	height: 30px;
+}
+
+	.field-container {
+		display: block;
+		margin: auto;
+		width: 50%;
+		padding: 10px;
+	}
+
+	.result {
+		background: gray;
+	}
+
+	.input {
+		float: right;
+		width: 33.33%;
+		height: 10px;
+	}
+
+	.text {
+		float: left;
+		width: 33.33%;
+			height 10px;
+	}
+
+	.button {
+
+		margin: auto;
+		width: 33.33%;
+	}
+
+	.body {
+		width: device-width;
+	}
+</style>
